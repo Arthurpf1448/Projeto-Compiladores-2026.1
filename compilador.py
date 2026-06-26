@@ -23,6 +23,7 @@ script: "script" "{" atributo* "}"
                | nav
 
 ?main_element: section
+             | repeat
 
 ?footer_element: paragraph
 
@@ -35,7 +36,10 @@ h1: "h1" STRING
 h2: "h2" STRING
 h3: "h3" STRING
 
-nav: "nav" "{" item* "}"
+nav: "nav" "{" nav_element* "}"
+
+?nav_element: item
+            | repeat
 
 item: "item" "{" atributo* "}"
 
@@ -45,6 +49,21 @@ section: "section" "{" section_content* "}"
                 | paragraph
                 | image
                 | article
+                | repeat
+
+// "repeat N { ... }": repete o bloco interno N vezes (estrutura nova da DSL)
+repeat: "repeat" NUMBER "{" repeat_content* "}"
+
+?repeat_content: h1
+              | h2
+              | h3
+              | paragraph
+              | image
+              | button
+              | item
+              | section
+              | article
+              | nav
 
 article: "article" "{" article_content* "}"
 
@@ -63,6 +82,7 @@ atributo: IDENT STRING
 IDENT: /[a-zA-Z_][a-zA-Z0-9_]*/
 
 %import common.ESCAPED_STRING -> STRING
+%import common.INT -> NUMBER
 %import common.WS
 %ignore WS
 """)
@@ -88,6 +108,12 @@ class GeradorHTML(Transformer):
     def nav(self, itens): return self._envolver("nav", itens)
     def section(self, itens): return self._envolver("section", itens)
     def article(self, itens): return self._envolver("article", itens)
+
+    def repeat(self, children):
+        """Repete o bloco interno N vezes. children[0] e o NUMBER; o resto e o conteudo ja traduzido."""
+        n = int(children[0])
+        bloco = "\n".join([str(i) for i in children[1:] if i])
+        return "\n".join([bloco] * n)
 
     def title(self, s):
         return f"<title>{self._string(s[0])}</title>"
@@ -130,54 +156,26 @@ class GeradorHTML(Transformer):
         return token[1:-1]
 
 
-codigo = """
-head {
-    title "Portal de Noticias"
-    meta { }
-    meta { charset "UTF-8" }
-    meta { name "viewport" content "width=device-width, initial-scale=1.0" }
-    link { }
-    link { rel "stylesheet" href "estilo.css" }
-}
+def main():
+    import sys
 
-header {
-    h1 "Jornal Diario"
-    nav {
-        item { href "/" }
-        item { href "/esportes" }
-        item { href "/cultura" }
-    }
-}
+    # Uso: python compilador.py [arquivo.dsl] [saida.html]
+    # Sem argumentos, usa "exemplo.dsl" -> "saida.html" como padrao.
+    entrada = sys.argv[1] if len(sys.argv) > 1 else "exemplo.dsl"
+    saida = sys.argv[2] if len(sys.argv) > 2 else "saida.html"
 
-main {
-    section {
-        h2 "Manchete"
-        image { }
-        image { src "capa.jpg" alt "Capa" }
-        article {
-            h3 "Economia"
-            p "Texto da materia."
-            button { }
-            button { onclick "ler()" }
-        }
-    }
-    section {
-        h2 "Galeria"
-        image { src "1.jpg" }
-        image { }
-        image { src "2.jpg" width "300" }
-    }
-}
+    with open(entrada, encoding="utf-8") as f:
+        codigo = f.read()
 
-footer {
-    p "Rodape do portal"
-}
+    arvore = analisador.parse(codigo)
+    html = GeradorHTML().transform(arvore)
 
-script { }
-script { src "main.js" defer "true" }
-"""
+    with open(saida, "w", encoding="utf-8") as f:
+        f.write(html + "\n")
 
-arvore = analisador.parse(codigo)
+    print(f"HTML gerado a partir de '{entrada}' e salvo em '{saida}'.\n")
+    print(html)
 
-html = GeradorHTML().transform(arvore)
-print(html)
+
+if __name__ == "__main__":
+    main()
