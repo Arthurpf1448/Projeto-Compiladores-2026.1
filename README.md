@@ -24,10 +24,10 @@ Luca Fiorenzano
 7. Copie e cole o código gerado num arquivo .txt e mude seu formato para .html e abra-o. Ou, se preferir, utilize algum testador online de HTML. Ex: https://www.lncc.br/~borges/php/testar.html
 8. Pronto! Este é o seu site gerado com a nossa DSL.
 
-## Exemplos de programas
+## Exemplos de programas  
 
-# 1. Site simples com um texto de Boas vindas
-
+# 1. Site simples com um texto de Boas vindas  
+```bash
 codigo = """
    header {
        h1 "Bem-vindo"
@@ -37,8 +37,9 @@ codigo = """
        }
    }
 """
-
-Código gerado:
+```
+Código gerado:  
+```bash
 <header>
     <h1>Bem-vindo</h1>
     <nav>
@@ -46,13 +47,13 @@ Código gerado:
         <a href="/sobre"></a>
     </nav>
 </header>
+```
+Resultado:  
 
-Resultado:
+IMG 1 AQUI  
 
-IMG 1 AQUI
-
-# 2. Página de uma receita de bolo
-
+# 2. Página de uma receita de bolo  
+```bash
 codigo = """
 head {
     title "Receita de Bolo de Cenoura"
@@ -95,9 +96,9 @@ main {
     }
 }
 """
-
-Código gerado:
-
+```
+Código gerado:  
+```bash
 <head>
     <title>Receita de Bolo de Cenoura</title>
     <meta charset="UTF-8">
@@ -134,10 +135,10 @@ Código gerado:
         <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Peda%C3%A7o_de_Bolo_de_Cenoura%2C_08-12-2020.jpg" alt="Fatia de bolo de cenoura" width="400">
     </section>
 </main>
+```
+Resultado:  
 
-Resultado:
-
-IMG 2 AQUI
+IMG 2 AQUI  
 
 
 
