@@ -50,7 +50,7 @@ Código gerado:
 ```
 Resultado:  
 
-IMG 1 AQUI  
+![Site de Boas vindas](img_site01.png)  
 
 # 2. Página de uma receita de bolo  
 ```bash
@@ -138,8 +138,4 @@ Código gerado:
 ```
 Resultado:  
 
-IMG 2 AQUI  
-
-
-
-
+![Site de Receita de bolo](img_site02.png)  
