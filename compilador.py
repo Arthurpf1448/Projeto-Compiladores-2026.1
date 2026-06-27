@@ -147,46 +147,14 @@ class GeradorHTML(Transformer):
     def _string(self, token):
         return token[1:-1]
 
-
 codigo = """
-head {
-    title "Portal de Noticias"
-    meta { charset "UTF-8" }
-    link { rel "stylesheet" href "estilo.css" }
-}
-
-header {
-    h1 "Jornal Diario"
-    nav {
-        item { href "/" }
-        item { href "/esportes" }
-    }
-}
-
-main {
-    section {
-        h2 "Manchete"
-        image { src "capa.jpg" alt "Capa" }
-        article {
-            h3 "Economia"
-            p "Texto da materia."
-            button { onclick "ler()" }
-        }
-    }
-    
-    section {
-        h2 "Galeria de Patrocinadores"
-        repeat 3 {
-            image { src "patrocinio.jpg" class "banner-anuncio" }
-        }
-    }
-}
-
-footer {
-    p "Rodape do portal"
-}
-
-script { src "main.js" defer "true" }
+   header {
+       h1 "Bem-vindo"
+       nav {
+           item { href "/" }
+           item { href "/sobre" }
+       }
+   }
 """
 
 arvore = analisador.parse(codigo)
