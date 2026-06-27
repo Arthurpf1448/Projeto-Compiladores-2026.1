@@ -19,7 +19,7 @@ Luca Fiorenzano
 5. Edite a parte "codigo" do projeto ou utilize o exemplo existente
 6. No terminal, digite:
    ```bash
-   python compilador.py
+   python Projeto.py
    ```
 7. Copie e cole o código gerado num arquivo .txt e mude seu formato para .html e abra-o. Ou, se preferir, utilize algum testador online de HTML. Ex: https://www.lncc.br/~borges/php/testar.html
 8. Pronto! Este é o seu site gerado com a nossa DSL.
