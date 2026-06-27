@@ -51,19 +51,18 @@ section: "section" "{" section_content* "}"
                 | article
                 | repeat
 
-// "repeat N { ... }": repete o bloco interno N vezes (estrutura nova da DSL)
 repeat: "repeat" NUMBER "{" repeat_content* "}"
 
 ?repeat_content: h1
-              | h2
-              | h3
-              | paragraph
-              | image
-              | button
-              | item
-              | section
-              | article
-              | nav
+               | h2
+               | h3
+               | paragraph
+               | image
+               | button
+               | item
+               | section
+               | article
+               | nav
 
 article: "article" "{" article_content* "}"
 
@@ -89,18 +88,14 @@ IDENT: /[a-zA-Z_][a-zA-Z0-9_]*/
 
 class GeradorHTML(Transformer):
     def _envolver(self, tag, itens):
-        """Função auxiliar para criar a tag e indentar o conteúdo interno"""
         conteudo = "\n".join([str(i) for i in itens if i])
-
         if conteudo:
             conteudo_identado = "\n".join(["    " + linha for linha in conteudo.split("\n")])
             return f"<{tag}>\n{conteudo_identado}\n</{tag}>"
         else:
             return f"<{tag}></{tag}>"
 
-    def start(self, blocos):
-        return "\n".join(blocos)
-
+    def start(self, blocos): return "\n".join(blocos)
     def head(self, itens): return self._envolver("head", itens)
     def header(self, itens): return self._envolver("header", itens)
     def main(self, itens): return self._envolver("main", itens)
@@ -110,14 +105,11 @@ class GeradorHTML(Transformer):
     def article(self, itens): return self._envolver("article", itens)
 
     def repeat(self, children):
-        """Repete o bloco interno N vezes. children[0] e o NUMBER; o resto e o conteudo ja traduzido."""
         n = int(children[0])
         bloco = "\n".join([str(i) for i in children[1:] if i])
         return "\n".join([bloco] * n)
 
-    def title(self, s):
-        return f"<title>{self._string(s[0])}</title>"
-
+    def title(self, s): return f"<title>{self._string(s[0])}</title>"
     def h1(self, s): return f"<h1>{self._string(s[0])}</h1>"
     def h2(self, s): return f"<h2>{self._string(s[0])}</h2>"
     def h3(self, s): return f"<h3>{self._string(s[0])}</h3>"
@@ -156,26 +148,48 @@ class GeradorHTML(Transformer):
         return token[1:-1]
 
 
-def main():
-    import sys
+codigo = """
+head {
+    title "Portal de Noticias"
+    meta { charset "UTF-8" }
+    link { rel "stylesheet" href "estilo.css" }
+}
 
-    # Uso: python compilador.py [arquivo.dsl] [saida.html]
-    # Sem argumentos, usa "exemplo.dsl" -> "saida.html" como padrao.
-    entrada = sys.argv[1] if len(sys.argv) > 1 else "exemplo.dsl"
-    saida = sys.argv[2] if len(sys.argv) > 2 else "saida.html"
+header {
+    h1 "Jornal Diario"
+    nav {
+        item { href "/" }
+        item { href "/esportes" }
+    }
+}
 
-    with open(entrada, encoding="utf-8") as f:
-        codigo = f.read()
+main {
+    section {
+        h2 "Manchete"
+        image { src "capa.jpg" alt "Capa" }
+        article {
+            h3 "Economia"
+            p "Texto da materia."
+            button { onclick "ler()" }
+        }
+    }
+    
+    section {
+        h2 "Galeria de Patrocinadores"
+        repeat 3 {
+            image { src "patrocinio.jpg" class "banner-anuncio" }
+        }
+    }
+}
 
-    arvore = analisador.parse(codigo)
-    html = GeradorHTML().transform(arvore)
+footer {
+    p "Rodape do portal"
+}
 
-    with open(saida, "w", encoding="utf-8") as f:
-        f.write(html + "\n")
+script { src "main.js" defer "true" }
+"""
 
-    print(f"HTML gerado a partir de '{entrada}' e salvo em '{saida}'.\n")
-    print(html)
+arvore = analisador.parse(codigo)
 
-
-if __name__ == "__main__":
-    main()
+html = GeradorHTML().transform(arvore)
+print(html)
